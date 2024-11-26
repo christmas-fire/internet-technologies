@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестирование класса Бюджет</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Лабораторная работа №3</h1>
+    <p>Реализовать класс Бюджет, реализующий хранение и обработку расходов и доходов согласно заданию.
+         Для каждой сущности реализовать CRUD (create, read, update, delete)</p>
+    <button onclick="testBudgetClass()">Запустить программу</button>
+    <pre id="output"></pre>
+
+
+    <script src="script.js"></script>
+    <script>
+        function testBudgetClass() {
+            const outputElement = document.getElementById('output');
+            outputElement.textContent = '';
+            try {
+                // Создание объекта класса Бюджет
+                const budget = new Budget();
+
+                // Добавление валюты
+                const usd = new Currency("USD");
+                usd.addRate("2024-01-01", 74.5);
+                budget.addCurrency(usd);
+                outputElement.textContent += "Добавлена валюта USD с курсом 74.5\n";
+
+                // Добавление типа расхода и дохода
+                const foodType = new Type("Еда");
+                budget.addExpenseType(foodType);
+                outputElement.textContent += "Добавлен тип расхода: Еда\n";
+
+                const salaryType = new Type("Зарплата");
+                budget.addIncomeType(salaryType);
+                outputElement.textContent += "Добавлен тип дохода: Зарплата\n";
+
+                // Добавление расхода и дохода
+                const expense1 = new Expense(160, foodType, "2024-10-28");
+                budget.addExpense(expense1);
+                outputElement.textContent += "Добавлен расход: 160 на Еда\n";
+                const expense2 = new Expense(40, foodType, "2024-10-28");
+                budget.addExpense(expense2);
+                outputElement.textContent += "Добавлен расход: 40 на Еда\n";
+                const expense3 = new Expense(65, foodType, "2024-10-28");
+                budget.addExpense(expense3);
+                outputElement.textContent += "Добавлен расход: 65 на Еда\n";
+
+                const income = new Income(40000, salaryType, "2024-10-15");
+                budget.addIncome(income);
+                outputElement.textContent += "Добавлен доход: 40000 на Зарплата\n";
+
+                // Расчет баланса
+                const balance = budget.getBalance("2024-10-01", "2024-10-31");
+                outputElement.textContent += `Баланс за период: ${balance}\n`;
+
+                // Фильтрация записей
+                const filteredEntries1 = budget.filterEntries("2024-10-01", "2024-10-31", "Еда");
+                outputElement.textContent += "Отфильтрованные записи: \n";
+                outputElement.textContent += JSON.stringify(filteredEntries1, null, 2) + "\n";
+
+                const filteredEntries2 = budget.filterEntries("2024-10-01", "2024-10-31", "Зарплата");
+                outputElement.textContent += "Отфильтрованные записи: \n";
+                outputElement.textContent += JSON.stringify(filteredEntries2, null, 2) + "\n";
+            } catch (error) {
+                outputElement.textContent += `Ошибка: ${error.message}\n`;
+            }
+        }
+    </script>
+</body>
+</html>
